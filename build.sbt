@@ -5,21 +5,13 @@ name := "jsext Library for Scala.js"
 
 normalizedName := "querki-jsext"
 
-version := "0.1-SNAPSHOT"
+version := "0.1"
 
 organization := "org.querki"
 
 scalaVersion := "2.11.6"
 
 crossScalaVersions := Seq("2.10.4", "2.11.6")
-
-//libraryDependencies +=
-//  "org.scala-js" %%% "scalajs-dom" % "0.8.0"
-//
-//jsDependencies +=
-//  "org.webjars" % "jquery" % "2.1.3" / "jquery.js"
-//
-//jsDependencies in Test += RuntimeDOM
 
 homepage := Some(url("http://www.querki.net/"))
 
