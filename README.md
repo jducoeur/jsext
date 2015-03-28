@@ -3,6 +3,13 @@ Commonly-useful extensions for Scala.js, particularly for facade development
 
 In the course of developing quite a lot of complex facades for Querki, I've found some common problems. This is a tiny library to help make it easier to deal with those.
 
+## Installation
+
+To use jsext, add this line to your Scala.js project's libraryDependencies:
+```
+"org.querki" %%% "querki-jsext" % "0.1"
+```
+
 ## JSOptionBuilder
 
 At the moment, jsext only contains one utility: JSOptionBuilder. This is designed to deal with a common problem in building facades, especially
