@@ -64,12 +64,7 @@ That is, for each field, we define a method that takes the type that is legal to
 which returns a new DialogOptionBuilder with that value added -- everything is immutable, and you chain these calls together to get the
 fully-constructed options object. If a field accepts multiple types, then you define one overload of the function for each type.
 
-Finally, somewhere near all of this (typically in the package object, but that is not required), you define an implicit that extracts the
-results from the built-up options, and converts them to the desired facade trait:
-```
-implicit def builder2DialogOptions(builder:DialogOptionBuilder) = builder._result
-```
-That is, this takes a DialogOptionBuilder, and produces a DialogOptions, which you can then pass into the `dialog()` function.
+Note that the JSOptionBuilder companion object includes an implicit def, which converts from the Builder to the target trait.
 
 ### Using the JSOptionBuilder
 
@@ -104,9 +99,6 @@ class FooOptionBuilder(val dict:OptMap) extends JSOptionBuilder[FooOptions, FooO
   def field2(v:someOtherType) = jsOpt("field2", v)
   
   // ... one jsOpt for each overload of each field
-}
-package object foo {
-  implicit def builder2FooOptions(builder:FooOptionBuilder) = builder._result
 }
 ```
 That's pretty much it. There's a little boilerplate, but not too much, and the resulting facade works well.
