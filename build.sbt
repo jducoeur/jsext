@@ -40,6 +40,12 @@ pomExtra := (
       <url>https://github.com/jducoeur/</url>
     </developer>
   </developers>
+  <contributors>
+    <contributor>
+      <name>Jasper Moeys</name>
+      <url>https://github.com/Jasper-M/</url>
+    </contributor>
+  </contributors>
 )
 
 pomIncludeRepository := { _ => false }

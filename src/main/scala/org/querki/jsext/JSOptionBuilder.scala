@@ -4,6 +4,8 @@ import scala.scalajs.js
 
 import js.JSConverters._
 
+import scala.language.implicitConversions
+
 /**
  * Helper class for defining strongly-typed "options" classes to pass into Scala.js facades.
  * This approach is particularly helpful for jQuery-based facades, which often take very
@@ -41,4 +43,13 @@ abstract class JSOptionBuilder[T <: js.Object, B <: JSOptionBuilder[T, _]](copy:
   override def toString = {
     s"""{\n${dict.keys.map{ key => s"  $key = ${dict(key).toString}"}.mkString("\n")}\n}"""
   }
+}
+
+object JSOptionBuilder {
+  
+  /**
+   * Automatically extract the result from a JSOptionBuilder when necessary.
+   */
+  implicit def builder2Options[T <: js.Object](builder: JSOptionBuilder[T,_]): T = builder._result
+  
 }
