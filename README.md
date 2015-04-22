@@ -1,19 +1,28 @@
 # jsext
-Commonly-useful extensions for Scala.js, particularly for facade development
+Commonly-useful extensions for Scala.js
 
-In the course of developing quite a lot of complex facades for Querki, I've found some common problems. This is a tiny library to help make it easier to deal with those.
+In the course of developing Querki, including quite a lot of complex facades, I've found some common problems. This is a tiny library to help make it easier to deal with those.
 
 ## Installation
 
 To use jsext, add this line to your Scala.js project's libraryDependencies:
 ```
-"org.querki" %%% "querki-jsext" % "0.2"
+"org.querki" %%% "querki-jsext" % "0.3"
 ```
+
+## RichFuture
+
+If you build a complex application in Scala.js, you will find that asynchronous programming winds up front-and-center. There are basically two ways to deal with this: either you make things deeply reactive (usually using the Facebook React library), or you do a lot of Future composition.
+
+Future composition is actually quite easy in Scala.js, and works well, but there is one key weakness: Scala's standard Future implementation has no concept of timeout. This is mildly inconvenient if you want your UI to be able to do things like time out requests, and it's a big problem if you are trying to test this Futures-based code using a package like utest.
+
+So RichFuture (which is available implicitly if you import org.querki.jsext._) adds several methods to address this. `failAfter()` is the general case, and allows you to specify the timeout duration and the message to give in case of failure; the two overloads of `withTimeout` are simpler variations of that. All of them have the same general purpose: they take a Future, and return a version of that Future that will fail after the specified amount of time.
+
+If you are using utest, and your tests end with Futures, I strongly recommend injecting one of these timeouts into the test. It essentially allows you to assert that the Future completes, and avoids inconvenient hangs when it doesn't.
 
 ## JSOptionBuilder
 
-At the moment, jsext only contains one utility: JSOptionBuilder. This is designed to deal with a common problem in building facades, especially
-facades of JQuery widgets.
+JSOptionBuilder is designed to deal with a common problem in building facades, especially facades of JQuery widgets.
 
 A typical such facade is usually initialized with an "options" object that defines its exact behavior. The problem is
 that these options objects often contain many fields -- 20-40 fields are not unusual -- some of which are polymorphic in a way that is hard to
