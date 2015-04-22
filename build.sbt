@@ -9,7 +9,7 @@ name := "jsext Library for Scala.js"
 
 normalizedName := "querki-jsext"
 
-version := "0.3"
+version := "0.4"
 
 organization := "org.querki"
 

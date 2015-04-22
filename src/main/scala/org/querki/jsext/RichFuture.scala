@@ -1,6 +1,6 @@
 package org.querki.jsext
 
-import scala.concurrent.{Future, Promise}
+import scala.concurrent.{Future, Promise, TimeoutException}
 import scala.concurrent.duration._
 import scala.util.{Success,Failure}
 
@@ -8,8 +8,6 @@ import scala.scalajs.js
 import js.timers.setTimeout
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
-class FutureTimeoutException(msg:String) extends Exception(msg)
-  
 /**
  * Useful enhancements to Future.
  */
@@ -28,7 +26,7 @@ class RichFuture[T](fut:Future[T]) {
     }
     setTimeout(duration) {
       if (!fut.isCompleted) {
-        promise.failure(new FutureTimeoutException(msg))
+        promise.failure(new TimeoutException(msg))
       }
     }
     promise.future
