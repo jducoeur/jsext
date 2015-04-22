@@ -7,7 +7,7 @@ In the course of developing Querki, including quite a lot of complex facades, I'
 
 To use jsext, add this line to your Scala.js project's libraryDependencies:
 ```
-"org.querki" %%% "querki-jsext" % "0.3"
+"org.querki" %%% "querki-jsext" % "0.4"
 ```
 
 ## RichFuture
@@ -16,7 +16,7 @@ If you build a complex application in Scala.js, you will find that asynchronous 
 
 Future composition is actually quite easy in Scala.js, and works well, but there is one key weakness: Scala's standard Future implementation has no concept of timeout. This is mildly inconvenient if you want your UI to be able to do things like time out requests, and it's a big problem if you are trying to test this Futures-based code using a package like utest.
 
-So RichFuture (which is available implicitly if you import org.querki.jsext._) adds several methods to address this. `failAfter()` is the general case, and allows you to specify the timeout duration and the message to give in case of failure; the two overloads of `withTimeout` are simpler variations of that. All of them have the same general purpose: they take a Future, and return a version of that Future that will fail after the specified amount of time.
+So RichFuture (which is available implicitly if you import org.querki.jsext._) adds several methods to address this. `failAfter()` is the general case, and allows you to specify the timeout duration and the message to give in case of failure; the two overloads of `withTimeout` are simpler variations of that. All of them have the same general purpose: they take a Future, and return a version of that Future that will fail (with a TimeoutException) after the specified amount of time.
 
 If you are using utest, and your tests end with Futures, I strongly recommend injecting one of these timeouts into the test. It essentially allows you to assert that the Future completes, and avoids inconvenient hangs when it doesn't.
 
