@@ -53,6 +53,15 @@ You can fix this by restructuring your code, but that's often a pain, and can ca
 ```
 `notYet` is a method on RichFuture that simply guarantees that the Future it returns will not be complete right now. If the real Future is still pending, it returns that. If the real Future is complete, it injects a minimal 1-ms delay, and returns a Future that will be complete after that time.
 
+Alternatively, if you want to put the not-synchronous guarantee into the test code and not touch the real code, you can use notYet there:
+```
+class RemoteConnectionStub {
+  def doSomeRemoteStuff() = {
+    Future.successful(new ReadyInfo()).notYet
+  }
+}
+```
+
 Note that this pattern would be utterly suspicious in the JVM -- there are all sorts of dangerous race conditions involved. But in the single-threaded JS environment, it works nicely, and allows you to guarantee that a code path will be asynchronous, so you don't have to worry about it getting screwed up by a synchronous return.
 
 ## JSOptionBuilder
