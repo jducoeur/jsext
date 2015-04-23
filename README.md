@@ -62,7 +62,9 @@ class RemoteConnectionStub {
 }
 ```
 
-Note that this pattern would be utterly suspicious in the JVM -- there are all sorts of dangerous race conditions involved. But in the single-threaded JS environment, it works nicely, and allows you to guarantee that a code path will be asynchronous, so you don't have to worry about it getting screwed up by a synchronous return.
+Note that this pattern would be trickier in the JVM, where there is no native scheduler and there are dangerous potential race conditions. But in the single-threaded JS environment, it works nicely, and allows you to guarantee that a code path will be asynchronous, so you don't have to worry about it getting screwed up by a synchronous return.
+
+(Note that this depends on `setTimeout()`, which AFAIK is non-standard but more or less universally implemented.)
 
 ## JSOptionBuilder
 
