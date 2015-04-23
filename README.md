@@ -12,6 +12,10 @@ To use jsext, add this line to your Scala.js project's libraryDependencies:
 
 ## RichFuture
 
+jsext takes advantage of things you can do in Scala.js that aren't as easy in the JVM, to enhance Future with a few nice features.
+
+### withTimeout
+
 If you build a complex application in Scala.js, you will find that asynchronous programming winds up front-and-center. There are basically two ways to deal with this: either you make things deeply reactive (usually using the Facebook React library), or you do a lot of Future composition.
 
 Future composition is actually quite easy in Scala.js, and works well, but there is one key weakness: Scala's standard Future implementation has no concept of timeout. This is mildly inconvenient if you want your UI to be able to do things like time out requests, and it's a big problem if you are trying to test this Futures-based code using a package like utest.
@@ -19,6 +23,37 @@ Future composition is actually quite easy in Scala.js, and works well, but there
 So RichFuture (which is available implicitly if you import org.querki.jsext._) adds several methods to address this. `failAfter()` is the general case, and allows you to specify the timeout duration and the message to give in case of failure; the two overloads of `withTimeout` are simpler variations of that. All of them have the same general purpose: they take a Future, and return a version of that Future that will fail (with a TimeoutException) after the specified amount of time.
 
 If you are using utest, and your tests end with Futures, I strongly recommend injecting one of these timeouts into the test. It essentially allows you to assert that the Future completes, and avoids inconvenient hangs when it doesn't.
+
+### notYet
+
+This is sort of the inverse of `withTimeout`, and is also motivated largely by testing. It is best explained with an example.
+
+Say that you have some code along roughly these lines:
+```
+def setup(watcher:Watcher):PreppedStuff = {
+  val readyFuture:Future[ReadyInfo] = remoteConnection.doSomeRemoteStuff()
+  readyFuture.foreach { readyInfo =>
+    finalSetup(readyInfo)
+    watcher.fullyReady(this)
+  }
+  val prepped = doSomeLocalPrep()
+  prepped
+}
+```
+That looks a bit specific, but the broad strokes are pretty common in Web clients: you have some code that needs to go do some slow remote work before signaling readiness.
+
+That all works great, until you go to do unit tests. Say that you have a stub implementation of RemoteConnection, which returns ReadyInfo synchronously -- often the easiest way to do things. But that means that watcher.fullyReady() is going to get called *before* setup() returns, often causing strange errors.
+
+You can fix this by restructuring your code, but that's often a pain, and can cause contortions that make your code messier just for testing. What you *really* want is to simply ensure that readyFuture doesn't fire synchronously, because your code is structured that way. That's where `notYet` comes in. You simply change your foreach like this:
+```
+  readyFuture.notYet.foreach { readyInfo =>
+    finalSetup(readyInfo)
+    watcher.fullyReady(this)
+  }
+```
+`notYet` is a method on RichFuture that simply guarantees that the Future it returns will not be complete right now. If the real Future is still pending, it returns that. If the real Future is complete, it injects a minimal 1-ms delay, and returns a Future that will be complete after that time.
+
+Note that this pattern would be utterly suspicious in the JVM -- there are all sorts of dangerous race conditions involved. But in the single-threaded JS environment, it works nicely, and allows you to guarantee that a code path will be asynchronous, so you don't have to worry about it getting screwed up by a synchronous return.
 
 ## JSOptionBuilder
 
