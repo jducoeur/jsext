@@ -41,4 +41,22 @@ class RichFuture[T](fut:Future[T]) {
    * Useful for sanity-checking, especially in testing.
    */
   def withTimeout:Future[T] = withTimeout("Future timed out")
+  
+  /**
+   * Guarantees that this Future will *not* complete synchronously. If it is already completed,
+   * this returns a new Future that will return the same value after a minimal delay.
+   * 
+   * This is mainly useful for simplifying code paths so that you don't have to deal with
+   * Futures that return synchronously only during, eg, testing.
+   */
+  def notYet:Future[T] = {
+    if (fut.isCompleted) {
+      val promise = Promise[T]
+      setTimeout(1) {
+        promise.completeWith(fut)
+      }
+      promise.future
+    } else
+      fut
+  }
 }
