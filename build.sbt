@@ -9,13 +9,13 @@ name := "jsext Library for Scala.js"
 
 normalizedName := "querki-jsext"
 
-version := "0.5"
+version := "0.6.SNAPSHOT"
 
 organization := "org.querki"
 
-scalaVersion := "2.11.6"
+scalaVersion := "2.11.7"
 
-crossScalaVersions := Seq("2.10.4", "2.11.6")
+crossScalaVersions := Seq("2.10.4", "2.11.7")
 
 homepage := Some(url("http://www.querki.net/"))
 
