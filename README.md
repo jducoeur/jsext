@@ -161,6 +161,46 @@ That's pretty much it. There's a little boilerplate, but not too much, and the r
 Obviously, the details may vary -- use common sense when applying this pattern. But it works as described for a large
 number of jQuery widgets.
 
+### JSOptionBuilder vs. ScalaJSDefined
+
+As of Scala.js release 0.6.5, there is [a `@ScalaJSDefined` annotation](http://www.scala-js.org/doc/sjs-defined-js-classes.html), which lets you create JavaScript classes from Scala.js. In principle, this seems like it should obviate the need for JSOptionBuilder. In practice, there are some tradeoffs.
+
+For simpler facades, and especially when you just need to create a JavaScript object with a few fields that always need to be filled in, `@ScalaJSDefined` is probably the best way to go: it lets you define the structure of the JS object with relatively little boilerplate, and the same trait or class can be used for both creating those objects and (if needed) reading native-JS versions of them. It's nice and easy.
+
+However, for jQuery-style configuration objects, `@ScalaJSDefined` works particularly poorly, for several reasons. Remember that these config objects typically contain a relatively large number of fields, all of which are optional. For this reason, you don't want to use a `@ScalaJSDefined` trait to define one, because then you would have to fill in *all* of the fields at the call site every time you called it. (Note that these traits differ from conventional Scala traits in that they have to be 'pure' -- they can't define default values.)
+
+A `@ScalaJSDefined` class works better for this, since it does allow you to provide defaults. But remember that all of the fields are optional. This means that they all have to be defined as `UndefOr[T]`, instead of their simple types. And you have a tradeoff to make, in how you declare the fields vs. how you fill them in. If you want to go pure-functional, you need a bit more boilerplate at the call site than I prefer, like this (making up a JQuery-style config object similar to the example in the Scala.js documentation; for sake of argument, say the default position is (0,0)):
+```
+@ScalaJSDefined
+class PositionConfig extends js.Object
+{
+  val x:UndefOr[Int] = undefined
+  val y:UndefOr[Int] = undefined
+}
+...
+val positionedThing = $(myThing).withPosition {
+  override val x = 100
+}
+```
+To get rid of having to say `override val` for every field, you have to sacrifice purity:
+```
+@ScalaJSDefined
+class PositionConfig extends js.Object
+{
+  var x:UndefOr[Int] = undefined
+  var y:UndefOr[Int] = undefined
+}
+...
+val positionedThing = $(myThing).withPosition {
+  x = 100
+}
+```
+That is, by using `var` instead of `val`, we get a more concise call-site syntax at the risk of using mutable fields.
+
+The final problem doesn't arise in every situation, but is insuperable when it does. jQuery has a core function named `$.isPlainObject`, which it uses to distinguish between DOM nodes and "normal" JavaScript objects. By its definition, `@ScalaJSDefined` objects are *not* "plain". The result is somewhat unpredictable behavior -- some jQuery libraries simply won't work if you pass in `@ScalaJSDefined` parameters.
+
+So this isn't a slam-dunk argument either way. `@ScalaJSDefined` is a bit easier to set up, but is either wordier at the call site (if you use the pure version), or requires that you use mutable fields. And it won't always work for jQuery facades. It's up to you, as the facade designer, to decide whether you prefer that, or the extra design-side boilerplate required by JSOptionBuilder.
+
 ### TO DO
 
 Some of the boilerplate involved in using JSOptionBuilder could probably be tamed with a few macros.
