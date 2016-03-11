@@ -138,7 +138,7 @@ trait DialogSetters[T <: js.Object, B <: JSOptionsOpts[T,_]] extends WidgetSette
 trait WidgetOptions extends js.Object
 object WidgetOptions extends WidgetOptionsBulder(noOpts)
 class WidgetOptionsBuilder(val dict: OptMap) extends JSOptionsBuilder[WidgetOptions, WidgetOptionsBuilder](new WidgetOptionsBuilder(_)) with WidgetSetters[WidgetOptions, WidgetOptionsBuilder]
-trait WidgetSetters[T <: js.Object, B <: JSOptionsOpts[T,_]] extends JSOptionOpt[T, B] {
+trait WidgetSetters[T <: js.Object, B <: JSOptionsOpts[T,_]] extends JSOptionSetter[T, B] {
   def height(v: Int) = jsOpt("height", v)
 }
 ```
