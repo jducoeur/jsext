@@ -95,7 +95,7 @@ DialogOptions.
 
 To begin with, we provide three related definitions:
 ```
-trait DialogOptions extends js.Object 
+trait DialogOptions extends js.Object
 object DialogOptions extends DialogOptionBuilder(noOpts)
 class DialogOptionBuilder(val dict:OptMap) extends JSOptionBuilder[DialogOptions, DialogOptionBuilder](new DialogOptionBuilder(_)) {
 }
@@ -109,9 +109,9 @@ All the interesting stuff goes into the `DialogOptionBuilder` class. Into this, 
 field, like these:
 ```
   def appendTo(v:String) = jsOpt("appendTo", v)
-  
+
   def autoOpen(v:Boolean) = jsOpt("autoOpen", v)
-  
+
   def buttons(v:js.Dictionary[js.Function0[Any]]) = jsOpt("buttons", v)
   def buttons(v:js.Array[js.Object]) = jsOpt("buttons", v)
 ```
@@ -120,6 +120,30 @@ which returns a new DialogOptionBuilder with that value added -- everything is i
 fully-constructed options object. If a field accepts multiple types, then you define one overload of the function for each type.
 
 Note that the JSOptionBuilder companion object includes an implicit def, which converts from the Builder to the target trait.
+
+### Defining a JSOptionBuilder with inheritance
+
+For hierarchical option structures you can inherit options from other classes.
+Then you have to split out all `jsOpt` calls into traits and write:
+```
+@ScalaJSDefined
+trait DialogOptions extends WidgetOptions
+object DialogOptions extends DialogOptionsBuilder(noOpts)
+class DialogOptionsBuilder(val dict: OptMap) extends JSOptionsBuilder[DialogOptions, DialogOptionsBuilder](new DialogOptionsBuilder(_)) with DialogSetters[DialogOptions, DialogOptionsBuilder]
+trait DialogSetters[T <: js.Object, B <: JSOptionsOpts[T,_]] extends WidgetSetters[T, B] {
+  def title(v: String) = jsOpt("title", v)
+}
+
+@ScalaJSDefined
+trait WidgetOptions extends js.Object
+object WidgetOptions extends WidgetOptionsBulder(noOpts)
+class WidgetOptionsBuilder(val dict: OptMap) extends JSOptionsBuilder[WidgetOptions, WidgetOptionsBuilder](new WidgetOptionsBuilder(_)) with WidgetSetters[WidgetOptions, WidgetOptionsBuilder]
+trait WidgetSetters[T <: js.Object, B <: JSOptionsOpts[T,_]] extends JSOptionOpt[T, B] {
+  def height(v: Int) = jsOpt("height", v)
+}
+```
+Now both `title` and `height` are available for `DialogOptions`, but for
+`WidgetOptions` only `height` is available.
 
 ### Using the JSOptionBuilder
 
@@ -145,14 +169,14 @@ If you are building a facade called Foo that takes an options object, you would 
 trait FooFacade extends js.Object {
   def foo(options:FooOptions):JQuery = js.native
 }
-trait FooOptions extends js.Object 
+trait FooOptions extends js.Object
 object FooOptions extends FooOptionBuilder(noOpts)
 class FooOptionBuilder(val dict:OptMap) extends JSOptionBuilder[FooOptions, FooOptionBuilder](new FooOptionBuilder(_)) {
   def field1(v:someType) = jsOpt("field1", v)
-  
+
   def field2(v:someType) = jsOpt("field2", v)
   def field2(v:someOtherType) = jsOpt("field2", v)
-  
+
   // ... one jsOpt for each overload of each field
 }
 ```

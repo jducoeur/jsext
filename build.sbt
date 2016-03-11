@@ -49,6 +49,10 @@ pomExtra := (
       <name>Jasper Moeys</name>
       <url>https://github.com/Jasper-M/</url>
     </contributor>
+    <contributor>
+      <name>Stefan Larsson</name>
+      <url>https://github.com/lastsys/</url>
+    </contributor>
   </contributors>
 )
 
