@@ -86,6 +86,7 @@ JSOptionBuilder is easiest to understand with a worked-out example. In this case
 fields. (You can find the full definition of this Widget [in the jQuery UI API documentation](http://api.jqueryui.com/dialog/). The facade of the widget
 itself is quite simple:
 ```
+@js.native
 trait JQueryUIDialogFacade extends js.Object {
   def dialog(options:DialogOptions):JQuery = js.native
 }
@@ -95,6 +96,7 @@ DialogOptions.
 
 To begin with, we provide three related definitions:
 ```
+@js.native
 trait DialogOptions extends js.Object
 object DialogOptions extends DialogOptionBuilder(noOpts)
 class DialogOptionBuilder(val dict:OptMap) extends JSOptionBuilder[DialogOptions, DialogOptionBuilder](new DialogOptionBuilder(_)) {
@@ -166,9 +168,11 @@ The resulting code is reasonably concise, and strongly-typed: in good Scala fash
 
 If you are building a facade called Foo that takes an options object, you would usually define the following code:
 ```
+@js.native
 trait FooFacade extends js.Object {
   def foo(options:FooOptions):JQuery = js.native
 }
+@js.native
 trait FooOptions extends js.Object
 object FooOptions extends FooOptionBuilder(noOpts)
 class FooOptionBuilder(val dict:OptMap) extends JSOptionBuilder[FooOptions, FooOptionBuilder](new FooOptionBuilder(_)) {
