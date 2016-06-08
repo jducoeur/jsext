@@ -1,7 +1,3 @@
-import SonatypeKeys._
-
-sonatypeSettings
-
 lazy val root = project.in(file(".")).
   enablePlugins(ScalaJSPlugin)
 
@@ -9,13 +5,13 @@ name := "jsext Library for Scala.js"
 
 normalizedName := "querki-jsext"
 
-version := "0.6"
+version := "0.7"
 
 organization := "org.querki"
 
-scalaVersion := "2.11.7"
+scalaVersion := "2.11.8"
 
-crossScalaVersions := Seq("2.10.4", "2.11.7")
+crossScalaVersions := Seq("2.10.5", "2.11.8")
 
 homepage := Some(url("http://www.querki.net/"))
 
@@ -57,3 +53,6 @@ pomExtra := (
 )
 
 pomIncludeRepository := { _ => false }
+
+
+fork in run := true
