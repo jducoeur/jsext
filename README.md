@@ -6,7 +6,7 @@ In the course of developing Querki, including quite a lot of complex facades, I'
 ## Installation
 
 To use jsext, add this line to your Scala.js project's libraryDependencies:
-```
+```scala
 "org.querki" %%% "querki-jsext" % "0.7"
 ```
 
@@ -29,7 +29,7 @@ If you are using utest, and your tests end with Futures, I strongly recommend in
 This is sort of the inverse of `withTimeout`, and is also motivated largely by testing. It is best explained with an example.
 
 Say that you have some code along roughly these lines:
-```
+```scala
 def setup(watcher:Watcher):PreppedStuff = {
   val readyFuture:Future[ReadyInfo] = remoteConnection.doSomeRemoteStuff()
   readyFuture.foreach { readyInfo =>
@@ -45,7 +45,7 @@ That looks a bit specific, but the broad strokes are pretty common in Web client
 That all works great, until you go to do unit tests. Say that you have a stub implementation of RemoteConnection, which returns ReadyInfo synchronously -- often the easiest way to do things. But that means that watcher.fullyReady() is going to get called *before* setup() returns, often causing strange errors.
 
 You can fix this by restructuring your code, but that's often a pain, and can cause contortions that make your code messier just for testing. What you *really* want is to simply ensure that readyFuture doesn't fire synchronously, because your code is structured that way. That's where `notYet` comes in. You simply change your foreach like this:
-```
+```scala
   readyFuture.notYet.foreach { readyInfo =>
     finalSetup(readyInfo)
     watcher.fullyReady(this)
@@ -54,7 +54,7 @@ You can fix this by restructuring your code, but that's often a pain, and can ca
 `notYet` is a method on RichFuture that simply guarantees that the Future it returns will not be complete right now. If the real Future is still pending, it returns that. If the real Future is complete, it injects a minimal 1-ms delay, and returns a Future that will be complete after that time.
 
 Alternatively, if you want to put the not-synchronous guarantee into the test code and not touch the real code, you can use notYet there:
-```
+```scala
 class RemoteConnectionStub {
   def doSomeRemoteStuff() = {
     Future.successful(new ReadyInfo()).notYet
@@ -85,7 +85,7 @@ separate overloaded function.
 JSOptionBuilder is easiest to understand with a worked-out example. In this case, we are going to use jQuery UI's Dialog widget, which has about 30
 fields. (You can find the full definition of this Widget [in the jQuery UI API documentation](http://api.jqueryui.com/dialog/). The facade of the widget
 itself is quite simple:
-```
+```scala
 @js.native
 trait JQueryUIDialogFacade extends js.Object {
   def dialog(options:DialogOptions):JQuery = js.native
@@ -95,7 +95,7 @@ That is, this says that the referenced jQuery object should be considered a Dial
 DialogOptions.
 
 To begin with, we provide three related definitions:
-```
+```scala
 @js.native
 trait DialogOptions extends js.Object
 object DialogOptions extends DialogOptionBuilder(noOpts)
@@ -109,7 +109,7 @@ about later), but is nothing but defaults.
 
 All the interesting stuff goes into the `DialogOptionBuilder` class. Into this, we put a bunch of declarations, one for each overload of each
 field, like these:
-```
+```scala
   def appendTo(v:String) = jsOpt("appendTo", v)
 
   def autoOpen(v:Boolean) = jsOpt("autoOpen", v)
@@ -127,7 +127,7 @@ Note that the JSOptionBuilder companion object includes an implicit def, which c
 
 For hierarchical option structures you can inherit options from other classes.
 Then you have to split out all `jsOpt` calls into traits and write:
-```
+```scala
 @ScalaJSDefined
 trait DialogOptions extends WidgetOptions
 object DialogOptions extends DialogOptionsBuilder(noOpts)
@@ -151,7 +151,7 @@ Now both `title` and `height` are available for `DialogOptions`, but for
 
 Using the resulting class is done with chained function calls instead of a constructor, but the number of characters you actually type
 is roughly the same. A typical call looks like this:
-```
+```scala
 val asDialog = $(elem).dialog(DialogOptions.
   title(dialogTitle).
   height(height).width(width).
@@ -167,7 +167,7 @@ The resulting code is reasonably concise, and strongly-typed: in good Scala fash
 ### Summary
 
 If you are building a facade called Foo that takes an options object, you would usually define the following code:
-```
+```scala
 @js.native
 trait FooFacade extends js.Object {
   def foo(options:FooOptions):JQuery = js.native
@@ -198,7 +198,7 @@ For simpler facades, and especially when you just need to create a JavaScript ob
 However, for jQuery-style configuration objects, `@ScalaJSDefined` works particularly poorly, for several reasons. Remember that these config objects typically contain a relatively large number of fields, all of which are optional. For this reason, you don't want to use a `@ScalaJSDefined` trait to define one, because then you would have to fill in *all* of the fields at the call site every time you called it. (Note that these traits differ from conventional Scala traits in that they have to be 'pure' -- they can't define default values.)
 
 A `@ScalaJSDefined` class works better for this, since it does allow you to provide defaults. But remember that all of the fields are optional. This means that they all have to be defined as `UndefOr[T]`, instead of their simple types. And you have a tradeoff to make, in how you declare the fields vs. how you fill them in. If you want to go pure-functional, you need a bit more boilerplate at the call site than I prefer, like this (making up a JQuery-style config object similar to the example in the Scala.js documentation; for sake of argument, say the default position is (0,0)):
-```
+```scala
 @ScalaJSDefined
 class PositionConfig extends js.Object
 {
@@ -211,7 +211,7 @@ val positionedThing = $(myThing).withPosition {
 }
 ```
 To get rid of having to say `override val` for every field, you have to sacrifice purity:
-```
+```scala
 @ScalaJSDefined
 class PositionConfig extends js.Object
 {
