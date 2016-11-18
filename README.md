@@ -7,7 +7,7 @@ In the course of developing Querki, including quite a lot of complex facades, I'
 
 To use jsext, add this line to your Scala.js project's libraryDependencies:
 ```scala
-"org.querki" %%% "querki-jsext" % "0.7"
+"org.querki" %%% "querki-jsext" % "0.8"
 ```
 
 ## RichFuture
