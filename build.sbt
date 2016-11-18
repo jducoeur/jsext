@@ -9,9 +9,9 @@ version := "0.7"
 
 organization := "org.querki"
 
-scalaVersion := "2.11.8"
+scalaVersion := "2.12.0"
 
-crossScalaVersions := Seq("2.10.5", "2.11.8")
+crossScalaVersions := Seq("2.10.5", "2.11.8", "2.12.0")
 
 homepage := Some(url("http://www.querki.net/"))
 
