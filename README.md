@@ -1,3 +1,5 @@
+Proof that you are wrong :P I just clicked edit and "propose file change"
+
 # jsext
 Commonly-useful extensions for Scala.js
 
