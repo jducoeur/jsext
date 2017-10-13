@@ -68,6 +68,8 @@ Note that this pattern would be trickier in the JVM, where there is no native sc
 
 ## JSOptionBuilder
 
+**Note:** JSOptionBuilder is semi-deprecated at this point -- I *think* that the @ScalaJSDefined annotation now covers all of the use cases that this was created for adequately. I haven't yet tested that in depth, though. If you come up with examples that this can cope with, and JSOptionBuilder really can't, I'd be interested in hearing them.
+
 JSOptionBuilder is designed to deal with a common problem in building facades, especially facades of JQuery widgets.
 
 A typical such facade is usually initialized with an "options" object that defines its exact behavior. The problem is
