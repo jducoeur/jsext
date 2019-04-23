@@ -1,3 +1,4 @@
+
 lazy val root = project.in(file(".")).
   enablePlugins(ScalaJSPlugin)
 
@@ -9,9 +10,9 @@ version := "0.8"
 
 organization := "org.querki"
 
-scalaVersion := "2.12.0"
+scalaVersion := "2.12.8"
 
-crossScalaVersions := Seq("2.10.5", "2.11.8", "2.12.0")
+crossScalaVersions := Seq("2.10.7", "2.11.12", "2.12.8")
 
 homepage := Some(url("http://www.querki.net/"))
 
