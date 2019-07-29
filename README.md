@@ -7,7 +7,7 @@ In the course of developing Querki, including quite a lot of complex facades, I'
 
 To use jsext, add this line to your Scala.js project's libraryDependencies:
 ```scala
-"org.querki" %%% "querki-jsext" % "0.7"
+"org.querki" %%% "querki-jsext" % "0.8"
 ```
 
 ## RichFuture
@@ -67,6 +67,8 @@ Note that this pattern would be trickier in the JVM, where there is no native sc
 (Note that this depends on `setTimeout()`, which AFAIK is non-standard but more or less universally implemented.)
 
 ## JSOptionBuilder
+
+**Note:** JSOptionBuilder is semi-deprecated at this point -- I *think* that the @ScalaJSDefined annotation now covers all of the use cases that this was created for adequately. I haven't yet tested that in depth, though. If you come up with examples that this can cope with, and JSOptionBuilder really can't, I'd be interested in hearing them.
 
 JSOptionBuilder is designed to deal with a common problem in building facades, especially facades of JQuery widgets.
 
