@@ -6,7 +6,9 @@ import scala.util.{Success,Failure}
 
 import scala.scalajs.js
 import js.timers.setTimeout
-import scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
+
+import scala.language.postfixOps
 
 /**
  * Useful enhancements to Future.
