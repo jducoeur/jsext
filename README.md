@@ -233,6 +233,15 @@ The final problem doesn't arise in every situation, but is insuperable when it d
 
 So this isn't a slam-dunk argument either way. `@ScalaJSDefined` easier to set up, and can be used to for interpreting native JS objects as well as creating them, but is either wordier at the call site (if you use the pure version), or requires that you use mutable fields, and you have to be very careful with your signature definitions. And it won't always work for jQuery facades. It's up to you, as the facade designer, to decide whether you prefer that, or the extra design-side boilerplate required by JSOptionBuilder.
 
+### Building
+
+Use the following commands to cross-compile / cross-build for scala `2.12` / `2.13` and scala-js `0.6` / `1.0`:
+
+```bash~~~~
+SCALAJS_VERSION=0.6.32 sbt +publishLocal
+SCALAJS_VERSION=1.0.1 sbt +publishLocal
+```
+
 ### TO DO
 
 Some of the boilerplate involved in using JSOptionBuilder could probably be tamed with a few macros.
