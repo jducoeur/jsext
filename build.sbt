@@ -9,9 +9,11 @@ version := "0.10"
 
 organization := "org.querki"
 
-scalaVersion := "2.13.1"
+ThisBuild / scalacOptions ++= Seq("-feature", "-deprecation")
 
-crossScalaVersions := Seq("2.12.8","2.13.1")
+scalaVersion := "3.1.0"
+
+crossScalaVersions := Seq("2.13.1", "2.12.8","2.13.1")
 
 publishTo := sonatypePublishToBundle.value
 
@@ -19,4 +21,4 @@ usePgpKeyHex("A5A4DA66BF0A391F46AEF0EAC74603EB63699C41")
 
 //pomIncludeRepository := { _ => false }
 
-fork in run := true
+run / fork := true

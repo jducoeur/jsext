@@ -1,6 +1,7 @@
 package org.querki
 
 import scala.concurrent.Future
+import scala.language.implicitConversions
 
 /**
  * Utilities for working with Scala.js.
@@ -16,5 +17,5 @@ package object jsext {
    */
   val noOpts = Map.empty[String, Any]
   
-  implicit def future2Wrapper[T](fut:Future[T]) = new RichFuture[T](fut)
+  implicit def future2Wrapper[T](fut:Future[T]): RichFuture[T] = new RichFuture[T](fut)
 }
