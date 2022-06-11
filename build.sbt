@@ -5,7 +5,7 @@ name := "jsext Library for Scala.js"
 
 normalizedName := "querki-jsext"
 
-version := "0.10"
+version := "0.12"
 
 organization := "org.querki"
 
@@ -13,7 +13,7 @@ ThisBuild / scalacOptions ++= Seq("-feature", "-deprecation")
 
 scalaVersion := "3.1.0"
 
-crossScalaVersions := Seq("2.13.1", "2.12.8","2.13.1")
+crossScalaVersions := Seq("2.12.8","2.13.1", "3.1.0")
 
 publishTo := sonatypePublishToBundle.value
 
