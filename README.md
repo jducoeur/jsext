@@ -137,7 +137,7 @@ Then you have to split out all `jsOpt` calls into traits and write:
 trait DialogOptions extends WidgetOptions
 object DialogOptions extends DialogOptionsBuilder(noOpts)
 class DialogOptionsBuilder(val dict: OptMap) extends JSOptionsBuilder[DialogOptions, DialogOptionsBuilder](new DialogOptionsBuilder(_)) with DialogSetters[DialogOptions, DialogOptionsBuilder]
-trait DialogSetters[T <: js.Object, B <: JSOptionsOpts[T,_]] extends WidgetSetters[T, B] {
+trait DialogSetters[T <: js.Object, B <: JSOptionBuilder[T,_]] extends WidgetSetters[T, B] {
   def title(v: String) = jsOpt("title", v)
 }
 
@@ -145,7 +145,7 @@ trait DialogSetters[T <: js.Object, B <: JSOptionsOpts[T,_]] extends WidgetSette
 trait WidgetOptions extends js.Object
 object WidgetOptions extends WidgetOptionsBulder(noOpts)
 class WidgetOptionsBuilder(val dict: OptMap) extends JSOptionsBuilder[WidgetOptions, WidgetOptionsBuilder](new WidgetOptionsBuilder(_)) with WidgetSetters[WidgetOptions, WidgetOptionsBuilder]
-trait WidgetSetters[T <: js.Object, B <: JSOptionsOpts[T,_]] extends JSOptionSetter[T, B] {
+trait WidgetSetters[T <: js.Object, B <: JSOptionBuilder[T,_]] extends JSOptionSetter[T, B] {
   def height(v: Int) = jsOpt("height", v)
 }
 ```
